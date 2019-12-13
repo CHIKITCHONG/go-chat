@@ -10,10 +10,11 @@ import (
 
 /*
 需求：
-
+1.
 单聊
 群聊
-
+2.
+上线、下线通知
 */
 var (
 	clientsMap = make(map[string]net.Conn)
@@ -77,7 +78,7 @@ func main() {
 	}()
 
 	for {
-		// 循环接入所有女朋友
+		// 循环接入所有协程
 		conn, e := listener.Accept()
 		SHandleError(e, "listen.Accept")
 
