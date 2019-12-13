@@ -60,7 +60,19 @@ func ioWithConn(conn net.Conn) {
 					}
 				}
 			} else {
-				conn.Write([]byte("已阅：" + msg))
+				if msg == "exit" {
+					// 将当前客户端从在线用户名中除名
+					for k, c := range clientsMap {
+						if c == conn {
+							delete(clientsMap, k)
+						} else {
+							// 向其他用户发送下线通知
+							c.Write([]byte(k + "下线了"))
+						}
+					}
+				} else {
+					conn.Write([]byte("已阅：" + msg))
+				}
 			}
 		}
 	}
@@ -81,6 +93,13 @@ func main() {
 		// 循环接入所有协程
 		conn, e := listener.Accept()
 		SHandleError(e, "listen.Accept")
+		clientAddr := conn.RemoteAddr()
+		fmt.Println(clientAddr.String() + "上线了")
+
+		// 给已经在线的用户发送 xx 上线通知
+		for _, c := range clientsMap {
+			c.Write([]byte(clientAddr.String() + "上线了"))
+		}
 
 		// 将每一个链接放入 map
 		clientsMap[conn.RemoteAddr().String()] = conn
