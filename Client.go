@@ -49,7 +49,7 @@ func main() {
 	// 设置优雅退出
 	<-chanQuit
 }
-
+// zhushi
 func handleReceive(conn net.Conn) {
 	buffer := make([]byte, 1024)
 	for {
